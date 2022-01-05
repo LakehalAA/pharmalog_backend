@@ -99,26 +99,6 @@ app.get("", (req, res) => {
   });
 });
 
-// Get all pharms
-app.get("", (req, res) => {
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log("connected as id " + connection.threadId);
-    connection.query("SELECT * from pharms", (err, rows) => {
-      connection.release(); // return the connection to pool
-
-      if (!err) {
-        res.send(rows);
-      } else {
-        console.log(err);
-      }
-
-      // if(err) throw err
-      console.log("The data from pharms table are: \n", rows);
-    });
-  });
-});
-
 // Getting details of a pharmacy
 app.get("/pharm_det/:id", (req, res) => {
   pool.getConnection((err, connection) => {
@@ -274,34 +254,6 @@ app.post("/traitements/", (req, res) => {
 
       console.log("The added Treatment: \n", rows);
     });
-  });
-});
-
-// Update state of a commande
-app.put("/state/:id", (req, res) => {
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log(`connected as id ${connection.threadId}`);
-
-    const { state } = req.body;
-
-    connection.query(
-      "UPDATE commande SET etat = ? WHERE cmd_Id = ?",
-      [state, req.params.id],
-      (err, rows) => {
-        connection.release(); // return the connection to pool
-
-        if (!err) {
-          res.send(
-            `Command had been updated to state: ${state} has been added.`
-          );
-        } else {
-          console.log(err);
-        }
-      }
-    );
-
-    console.log(req.body);
   });
 });
 
